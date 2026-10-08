@@ -1,12 +1,26 @@
-import { useState } from "react";
-import heroImg from "./assets/hero.png";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import "./App.css";
+import Header from "./components/Header.jsx";
+import VendorCard from "./components/VendorCard.jsx";
+import MenuItemCard from "./components/MenuItemCard.jsx";
+import Footer from "./components/Footer.jsx";
 
 function App() {
-    
-    return <h1>CAmpusEats</h1>
+    return (
+        <>
+            <Header />
+            <main className="container">
+                <section>
+                    <h2 className="section-title">Today's vendors</h2>
+                    <VendorCard />
+                </section>
+                <section>
+                    <h2 className="section-title">Popular items</h2>
+                    <div className="grid">
+                        <MenuItemCard />
+                    </div>
+                </section>
+            </main>
+            <Footer />
+        </>
+    );
 }
-
 export default App;
