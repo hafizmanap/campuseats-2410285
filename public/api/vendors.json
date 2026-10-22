@@ -1,0 +1,75 @@
+[
+    {
+        "id": "2410285-kopi-songkok",
+        "name": "Kopi Songkok",
+        "location": "Mahallah Ali, Block C",
+        "openHours": "8:00 - 11:00 pm",
+        "isOpen": true,
+        "dailySpecial": {
+            "id": "2410285-special",
+            "name": "Special Iced Matcha",
+            "price": 12.0,
+            "category": "Drinks",
+            "popular": true,
+            "endsAt": "2026-10-23T22:00:00+08:00"
+        },
+        "menu": [
+            {
+                "id": "2411285",
+                "name": "Teh Tarik",
+                "price": 2.5,
+                "category": "Drinks",
+                "popular": true
+            },
+            {
+                "id": "2412285",
+                "name": "Iced Milo",
+                "price": 3.5,
+                "category": "Drinks",
+                "popular": true
+            },
+            {
+                "id": "2413285",
+                "name": "Kopi O",
+                "price": 2.0,
+                "category": "Drinks",
+                "popular": false
+            },
+            {
+                "id": "2414285",
+                "name": "Nasi Lemak",
+                "price": 5.5,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2415285",
+                "name": "Chicken Fried Rice",
+                "price": 7.5,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2416285",
+                "name": "Mee Goreng",
+                "price": 6.0,
+                "category": "Meals",
+                "popular": false
+            },
+            {
+                "id": "2417285",
+                "name": "Curry Puff",
+                "price": 1.5,
+                "category": "Snacks",
+                "popular": true
+            },
+            {
+                "id": "2418285",
+                "name": "Chocolate Muffin",
+                "price": 3.0,
+                "category": "Snacks",
+                "popular": false
+            }
+        ]
+    }
+]
