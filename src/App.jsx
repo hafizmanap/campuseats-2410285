@@ -111,7 +111,7 @@ function App() {
             <section className="card">
                 <h2>Order Placed!</h2>
                 <p>Thank you for your order, {lastOrder.name}!</p>
-                <p>Total: ${lastOrder.total.toFixed(2)}</p>
+                <p>Total: RM{lastOrder.total.toFixed(2)}</p>
                 <button
                     type="button"
                     className="btn"
@@ -133,7 +133,7 @@ function App() {
     } else if (loading) {
         content = <Loading />;
     } else if (error) {
-        content = <ErrorMessage message={error} />;
+        content = <ErrorMessage message={error} onRetry={() => setReloadKey((key) => key + 1)} />;
     } else if (vendors.length === 0) {
         content = <p className="muted">No vendors available.</p>;
     } else {
@@ -178,7 +178,7 @@ function App() {
     return (
         <>
             <Header
-                cartCount={cart.length}
+                cartCount={cartCount}
                 onShowMenu={() => setView("menu")}
                 onShowCart={() => setView("cart")}
             />

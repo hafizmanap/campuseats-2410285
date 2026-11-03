@@ -33,10 +33,15 @@ function CartPage({
                             key={line.item.id}
                             line={line}
                             onChangeQty={onChangeQty}
-                            onREmove={onRemove}
+                            onRemove={onRemove}
                         />
                     ))}
                 </ul>
+
+                <div className="cart-total">
+                    <h3>Total: RM {total.toFixed(2)}</h3>
+                </div>
+
             </section>
 
             <CheckOutForm onPlaceOrder={onPlaceOrder} />

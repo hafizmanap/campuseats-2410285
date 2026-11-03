@@ -1,4 +1,4 @@
-function CartItem({ line, onREmove, onChangeQty }) {
+function CartItem({ line, onRemove, onChangeQty }) {
     const {item, qty} = line;
 
     return(

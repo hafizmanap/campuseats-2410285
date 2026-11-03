@@ -4,13 +4,22 @@ function Header({ cartCount, onShowMenu, onShowCart }) {
             <h1 className="logo">CampusEats</h1>
             
             <nav className="nav">
-                <a href="/" onClick={onShowMenu}>
+                <a href="/" onClick={(event) => {
+                    event.preventDefault();
+                    onShowMenu();
+                }}>
                     Vendors
                 </a>
-                <a href="/" onClick={onShowCart}>
+                <a href="/" onClick={(event) => {
+                    event.preventDefault();
+                    onShowCart();
+                }}>
                     My Orders
                 </a>
-                <a href="./CartPage.jsx" className="cart" onClick={onShowCart}>
+                <a href="./CartPage.jsx" className="cart" onClick={(event) => {
+                    event.preventDefault();
+                    onShowCart();
+                }}>
                     Cart
                     <span className="badge">{cartCount}</span>
                 </a>
