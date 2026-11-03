@@ -1,9 +1,9 @@
 /* =====================================================================
-   CampusEats starter CSS (BICS 3301): complete, Weeks 1 to 11
-   Paste ALL of this into src/index.css once, in Week 1, and leave it.
-   Rules for later weeks (cart, forms, login, dashboard, offline banner…)
-   do nothing until you build the components that use them.
-   You do not need to write CSS in this course; focus on React.
+    CampusEats starter CSS (BICS 3301): complete, Weeks 1 to 11
+    Paste ALL of this into src/index.css once, in Week 1, and leave it.
+    Rules for later weeks (cart, forms, login, dashboard, offline banner…)
+    do nothing until you build the components that use them.
+    You do not need to write CSS in this course; focus on React.
    ===================================================================== */
 
 :root {
@@ -39,6 +39,9 @@ body {
     color: #fff;
 }
 .logo {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 750;
     margin: 0;
     font-size: 1.4rem;
 }

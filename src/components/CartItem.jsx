@@ -1,7 +1,7 @@
 function CartItem({ line, onRemove, onChangeQty }) {
-    const {item, qty} = line;
+    const { item, qty } = line;
 
-    return(
+    return (
         <li className="cart-line">
             <div>
                 <p className="cart-name">{item.name}</p>
@@ -9,16 +9,24 @@ function CartItem({ line, onRemove, onChangeQty }) {
             </div>
 
             <div className="qty">
-                <button  type="button" onClick={() => onChangeQty(item.id, -1)}>-</button>
+                <button type="button" onClick={() => onChangeQty(item.id, -1)}>
+                    -
+                </button>
                 <span>{qty}</span>
-                <button  type="button" onClick={() => onChangeQty(item.id, 1)}>+</button>
+                <button type="button" onClick={() => onChangeQty(item.id, 1)}>
+                    +
+                </button>
             </div>
 
-            <button className="btn btn-remove" type="button" onClick={() => onRemove(item.id)}>
+            <button
+                className="btn btn-remove"
+                type="button"
+                onClick={() => onRemove(item.id)}
+            >
                 Remove
             </button>
         </li>
-    )
+    );
 }
 
 export default CartItem;
