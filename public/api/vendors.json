@@ -12,7 +12,7 @@
             "category": "Meals",
             "description": "Rice served with crispy chicken and house sambal.",
             "popular": true,
-            "endsAt": "2026-11-05T22:00:00+08:00"
+            "endsAt": "2026-11-06T22:00:00+08:00"
         },
         "menu": [
             {
@@ -78,6 +78,152 @@
                 "price": 3.0,
                 "category": "Snacks",
                 "popular": false
+            }
+        ]
+    },
+    {
+        "id": "2415666-wok-roll",
+        "name": "Wok & Roll",
+        "location": "Mahallah Aminah, Block A",
+        "openHours": "9:00 am - 10:00 pm",
+        "isOpen": true,
+        "menu": [
+            {
+                "id": "2415666-m1",
+                "name": "Chicken Chop Rice",
+                "description": "Grilled chicken chop served with rice and black pepper sauce.",
+                "price": 9.5,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2415666-m2",
+                "name": "Tom Yum Fried Rice",
+                "description": "Fried rice cooked with spicy tom yum seasoning and vegetables.",
+                "price": 7.5,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2415666-m3",
+                "name": "Spaghetti Carbonara",
+                "description": "Creamy pasta with chicken slices and cheese.",
+                "price": 10.0,
+                "category": "Meals",
+                "popular": false
+            },
+            {
+                "id": "2415666-m4",
+                "name": "French Fries",
+                "description": "Crispy golden potato fries served with tomato sauce.",
+                "price": 4.0,
+                "category": "Snacks",
+                "popular": true
+            },
+            {
+                "id": "2415666-m5",
+                "name": "Chicken Nuggets",
+                "description": "Golden fried chicken nuggets served with dipping sauce.",
+                "price": 5.5,
+                "category": "Snacks",
+                "popular": false
+            },
+            {
+                "id": "2415666-m6",
+                "name": "Iced Lemon Tea",
+                "description": "Refreshing lemon tea served chilled.",
+                "price": 3.0,
+                "category": "Drinks",
+                "popular": true
+            },
+            {
+                "id": "2415666-m7",
+                "name": "Chocolate Milkshake",
+                "description": "Cold and creamy chocolate milkshake.",
+                "price": 5.0,
+                "category": "Drinks",
+                "popular": false
+            },
+            {
+                "id": "2415666-m8",
+                "name": "Vanilla Ice Cream",
+                "description": "Smooth vanilla ice cream served in a cup.",
+                "price": 3.5,
+                "category": "Desserts",
+                "popular": true
+            }
+        ]
+    },
+    {
+        "id": "2410233-mamma-mia",
+        "name": "Mamma Mia Cafe",
+        "location": "Mahallah Asiah, Block B",
+        "openHours": "8:00 am - 10:00 pm",
+        "isOpen": true,
+        "menu": [
+            {
+                "id": "2410233-m1",
+                "name": "Chicken Burger",
+                "description": "Juicy chicken patty with lettuce, cheese and special sauce.",
+                "price": 7.0,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2410233-m2",
+                "name": "Beef Burger",
+                "description": "Grilled beef patty served with fresh vegetables and cheese.",
+                "price": 8.5,
+                "category": "Meals",
+                "popular": true
+            },
+            {
+                "id": "2410233-m3",
+                "name": "Chicken Wrap",
+                "description": "Soft tortilla filled with chicken, lettuce and mayonnaise.",
+                "price": 6.5,
+                "category": "Meals",
+                "popular": false
+            },
+            {
+                "id": "2410233-m4",
+                "name": "Garlic Bread",
+                "description": "Toasted bread topped with buttery garlic spread.",
+                "price": 3.5,
+                "category": "Snacks",
+                "popular": true
+            },
+            {
+                "id": "2410233-m5",
+                "name": "Onion Rings",
+                "description": "Crispy battered onion rings served with dipping sauce.",
+                "price": 4.0,
+                "category": "Snacks",
+                "popular": false
+            },
+            {
+                "id": "2410233-m6",
+                "name": "Iced Latte",
+                "description": "Espresso mixed with chilled fresh milk.",
+                "price": 5.5,
+                "category": "Drinks",
+                "popular": true
+            },
+            {
+                "id": "2410233-m7",
+                "name": "Strawberry Smoothie",
+                "description": "Fresh strawberry blended with milk and ice.",
+                "price": 5.0,
+                "category": "Drinks",
+                "popular": false
+            },
+            {
+                "id": "2410233-m8",
+                "name": "Chocolate Brownie",
+                "description": "Rich chocolate brownie with a soft, fudgy centre.",
+                "price": 4.5,
+                "category": "Desserts",
+                "popular": true
             }
         ]
     }
