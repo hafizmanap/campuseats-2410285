@@ -32,7 +32,16 @@ Help to implement a shopping cart, fetching vendor data  from a mock API and cre
 - One thing the AI got wrong and how I fixed it:
 The AI initially suggested updating the cart quantity without properly handling items whose quantity reached zero. I fixed this by updating the handleChangeQty() function so that items are automatically removed from the cart when their quantity reaches zero.
 
-
+## Week 4
+- Tool(s): ChatGPT
+- What I asked for:
+Help to implement custom hooks, local storage and react router.
+- What I kept, changed or rejected, and why: 
+	• Kept: The use of CartContext and CartProvider to manage cart data globally as no need to pass cart-related props through multiple components.
+	• Changed: Refactored the existing vendor fetching logic into a custom useVendors() hook and moved cart functions into the cart context to make the code more organized.
+	• Rejected: Keep the cart state only inside App.jsx because it would make sharing cart data between different pages more complicated. Instead, I used useLocalStorage to preserve cart data even after refreshing the browser.
+- One thing the AI got wrong and how I fixed it:
+The AI initially suggested using the cart context without checking whether a component was wrapped inside the CartProvider. This could cause errors when useCart() was called outside the provider. I fixed this by adding a clear error check inside the custom useCart() hook so that it throws an error if the context is accessed outside CartProvider.
 
 # Week 1 reflection
 
