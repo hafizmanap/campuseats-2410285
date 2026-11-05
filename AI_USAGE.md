@@ -4,11 +4,11 @@
 - What I asked for: 
 A simple counter component using React state and an introduction to JSX.
 - What I kept, changed or rejected, and why: 
-• Kept: The standard useState structure because it accurately demonstrated how to track the count.
+• Kept: The standard useState structure because it shows how to track the count.
 • Changed: Modified the CSS classes applied to the buttons to match my project's global style guide instead of using the generic inline styles provided.
 • Rejected: A complex useEffect hook that the AI automatically included to log the count, as it was unnecessary scope creep for a basic counter.
 - One thing the AI got wrong and how I fixed it:
-The AI directly mutated the state variable using count++ inside the click handler. I fixed this by using the proper setter function: setCount(prevCount => prevCount + 1).
+The AI at first mutated the state variable using count++ inside the click handler. I fixed this by using the proper setter function: setCount(prevCount => prevCount + 1).
 
 ## Week 2
 - Tool(s): ChatGPT
@@ -19,7 +19,19 @@ An array mapping function to render a list of user profile cards from a JSON pay
 	• Changed: Extracted the inline mapping logic out into its own standalone <UserProfile /> component to keep the main file readable.
 	• Rejected: The AI generated mock data structure because it didn't align with the actual keys (userId vs id) coming from my backend API.
 - One thing the AI got wrong and how I fixed it:
-The AI forgot to add a key prop to the top-level element inside the .map() loop, resulting in a console warning. I fixed it by adding key={user.id} to the container.
+The AI forgot to add a key prop to the top-level element inside the .map() loop, which cause a console warning. I fixed it by adding key={user.id} to the container.
+
+## Week 3
+- Tool(s): ChatGPT
+- What I asked for:
+Help to implement a shopping cart, fetching vendor data  from a mock API and create validation message in the checkout form.
+- What I kept, changed or rejected, and why: 
+	• Kept: The use of reduce() to calculate the cart quantity and total price because it made the calculations dynamic whenever items were added, removed, or updated.
+	• Changed: Modifies the checkout form validation and error messages to match the required rules.
+	• Rejected: An unnecessary way that stored the cart total in a separate state variable because the total could be calculated directly from the cart using reduce(), which can also avoids duplicated state.
+- One thing the AI got wrong and how I fixed it:
+The AI initially suggested updating the cart quantity without properly handling items whose quantity reached zero. I fixed this by updating the handleChangeQty() function so that items are automatically removed from the cart when their quantity reaches zero.
+
 
 
 # Week 1 reflection
