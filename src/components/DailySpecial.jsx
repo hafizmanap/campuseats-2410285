@@ -55,7 +55,7 @@ function DailySpecial({ special, vendor }) {
                 </p>
             )}
             <p className="price">RM {special.price.toFixed(2)}</p>
-
+            <p className="description">{special.description}</p>
             <p role="timer" aria-live="off">
                 Time remaining: {days > 0 ? `${days}d ` : ""}
                 {clock}
