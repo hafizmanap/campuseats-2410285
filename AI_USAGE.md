@@ -60,3 +60,25 @@ The AI initially suggested using the cart context without checking whether a com
 4. Name one benefit of splitting the UI into small componenets?
 • Reusability: You can write a component (like a Button or Card) once and safely reuse it across different parts of your application, saving time and keeping your codebase DRY (Don't Repeat Yourself).
 
+## Week 5
+- Tool(s): ChatGPT / Gemini
+- What I asked for:
+Help setting up Firebase Authentication with AuthContext and AuthProvider, creating LoginPage and updating my DailySpecial countdown feature to depend on the signed-in user.
+- What I kept, changed or rejected, and why:
+	• Kept: The onAuthStateChanged listener inside AuthProvider with its cleanup function and loading state so protected routes wait for Firebase before redirecting, as well as the per-user localStorage key pattern (ce-special-<uid>) for the daily special countdown.
+	• Changed: Updated RegisterPage to validate that the display name is at least 3 characters before calling register(), and mapped Firebase error codes to user-friendly messages using authErrorMessage() instead of showing raw error codes.
+	• Rejected: Storing Firebase API keys directly inside src/firebase.js, keeping them in .env.local with VITE_ prefixes instead so secrets are not committed to Git.
+- One thing the AI got wrong and how I fixed it:
+The AI initially checked if (!user) before checking if (loading) inside ProtectedRoute, which caused a brief flash of the login page whenever a signed-in user refreshed /cart or /orders. I fixed this by returning <Loading /> first while loading is true, and passing state={{ from: location.pathname }} on redirect so users return to their intended page after logging in.
+
+
+## Week 6
+- Tool(s): Gemini
+- What I asked for:
+Resolving Firestore permission errors during seeding, and migrating my Daily Special countdown from localStorage to a live Firestore Timestamp.
+- What I kept, changed or rejected, and why:
+	• Kept: The onSnapshot subscription patterns in vendors.js and orders.js, as well as the Timestamp conversion inside seedDemoData() so re-seeding preserves the specialEndsAt Timestamp automatically.
+	• Changed: Updated DailySpecial.jsx to read specialEndsAt from inside the nested dailySpecial object (special.specialEndsAt) to match my existing NasiNova shop structure in vendors.json, and kept my existing CheckOutForm component naming.
+	• Rejected: Creating a brand-new SpecialCountdown badge component from scratch, since I already had a working DailySpecial card component from Week 5 that only needed its localStorage timer swapped for Firestore.
+- One thing the AI got wrong and how I fixed it:
+The AI initially assumed special and specialEndsAt were stored at the top level of the vendor document (vendor.specialEndsAt), which caused my countdown to show "This daily special has ended" even though the date had not expired. I fixed this by sharing my vendors.json and DailySpecial.jsx structure so the code reads special.specialEndsAt inside the dailySpecial map and re-seeded Firestore.

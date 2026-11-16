@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { subscribeToVendors } from "../services/vendors.js";
 
 function useVendors() {
     const [vendors, setVendors] = useState([]);
@@ -7,36 +8,21 @@ function useVendors() {
     const [reloadKey, setReloadKey] = useState(0);
 
     useEffect(() => {
-        const controller = new AbortController();
-
-        async function loadVendors() {
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await fetch("/api/vendors.json", {
-                    signal: controller.signal,
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                setVendors(await response.json());
-            } catch (err) {
-                if (err.name !== "AbortError") {
-                    setError(err.message);
-                }
-            } finally {
-                // An aborted request belongs to an effect that was already cleaned up
-                if (!controller.signal.aborted) {
-                    setLoading(false);
-                }
+        setLoading(true);
+        setError(null);
+        const unsubscribe = subscribeToVendors(
+            (data) => {
+                setVendors(data);
+                setLoading(false);
+            },
+            (err) => {
+                console.error("Error fetching vendors:", err);
+                setError(err);
+                setLoading(false);
             }
-        }
+        );
 
-        loadVendors();
-
-        return () => controller.abort();
+        return () => unsubscribe(); // Stop listening when the component unmounts or reloadKey changes
     }, [reloadKey]);
 
     const reload = useCallback(() => setReloadKey((key) => key + 1), []);

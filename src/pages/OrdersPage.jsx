@@ -1,8 +1,19 @@
 import { Link } from "react-router";
-import useCart from "../hooks/useCart.js";
+import useMyOrders from "../hooks/useMyOrders.js";
+import OrderStatus from "../components/OrderStatus.jsx";
+import OrderActions from "../components/OrderActions.jsx";
+import { Loading, ErrorMessage } from "../components/Status.jsx";
 
-function OrdersPage() {
-    const { orders } = useCart();
+export default function OrdersPage() {
+    const { orders, loading, error } = useMyOrders();
+
+    if (loading) {
+        return <Loading message="Loading your orders..." />;
+    }
+
+    if (error) {
+        return <ErrorMessage message={error} />;
+    }
 
     if (orders.length === 0) {
         return (
@@ -22,26 +33,28 @@ function OrdersPage() {
             <ul className="order-list">
                 {orders.map((order) => (
                     <li key={order.id} className="card">
-                        <h3>
-                            {order.name} &middot; Mahallah {order.mahallah}
-                        </h3>
-                        <p className="muted">
-                            Pickup at {order.pickupTime} &middot; placed{" "}
-                            {new Date(order.placedAt).toLocaleString()}
+                        <p className="cart-name">
+                            {order.vendorName} &middot; pickup {order.pickupTime}
                         </p>
-                        <ul>
-                            {order.items.map((line) => (
-                                <li key={line.item.id}>
-                                    {line.qty} &times; {line.item.name}
-                                </li>
-                            ))}
-                        </ul>
-                        <p className="price">Total: RM {order.total.toFixed(2)}</p>
+                        <p className="muted">
+                            {order.items
+                                .map((i) => `${i.qty}× ${i.name}`)
+                                .join(", ")}
+                        </p>
+                        <p className="muted">
+                            Placed{" "}
+                            {order.createdAt
+                                ? order.createdAt
+                                        .toDate()
+                                        .toLocaleString("en-MY")
+                                : "just now"}
+                        </p>
+                        <p className="price">RM {order.total.toFixed(2)}</p>
+                        <OrderStatus status={order.status} />
+                        {order.status === 'Received' && <OrderActions order={order} />}
                     </li>
                 ))}
             </ul>
         </section>
     );
 }
-
-export default OrdersPage;

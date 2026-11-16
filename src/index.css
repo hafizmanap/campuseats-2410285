@@ -353,6 +353,20 @@ a.card:hover {
     background: var(--green);
     color: #fff;
 }
+.order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.6rem;
+}
+.order-actions input {
+    width: auto;
+}
+.btn-small {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
 
 /* Week 7 additions */
 .row {

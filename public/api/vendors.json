@@ -13,7 +13,8 @@
             "description": "Rice served with crispy chicken and house sambal.",
             "popular": true,
             "available": true,
-            "endsAt": "2026-11-20T22:00:00+08:00"
+            "special": true,
+            "specialEndsAt": "2026-11-20T22:00:00+08:00"
         },
         "menu": [
             {

@@ -2,17 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import useCart from "../hooks/useCart.js";
 import { useAuth } from "../hooks/useAuth.js";
-import useLocalStorage from "../hooks/useLocalStorage.js";
 
-//The special runs until 23:59:59 today (local time).
-function getTodayEnd() {
-    const end = new Date();
-    end.setHours(23, 59, 59, 999);
-    return end.toISOString();
-}
-
-function getTimeRemaining(endsAt) {
-    const diff = new Date(endsAt).getTime() - Date.now();
+function getTimeRemaining(endMillis) {
+    if (!endMillis) return null;
+    const diff = endMillis - Date.now();
 
     if (diff <= 0) return null;
 
@@ -25,51 +18,41 @@ function getTimeRemaining(endsAt) {
     return { days, hours, minutes, seconds };
 }
 
-// Pass vendor to show a link to that vendor's page
-function DailySpecial({ special, vendor }) {
+function DailySpecial({ special, endsAt, vendor }) {
     const { user } = useAuth();
     const location = useLocation();
     const { addToCart } = useCart();
 
-    const storageKey = user ? `ce-special-${user.uid}` : null;
-    const [savedEndsAt, setSavedEndsAt] = useLocalStorage(
-        storageKey,
-        getTodayEnd(),
-    );
-
-    const today = new Date().toDateString();
-    const savedDay = new Date(savedEndsAt).toDateString();
-
-    useEffect(() => {
-        if (user && savedDay !== today) {
-            setSavedEndsAt(getTodayEnd());
-        }
-    }, [user, savedDay, today, setSavedEndsAt]);
+    // Check explicit endsAt prop first, then fall back to special.specialEndsAt
+    const rawEndsAt = endsAt ?? special?.specialEndsAt;
+    const endMillis =
+        rawEndsAt?.toMillis?.() ??
+        (rawEndsAt ? new Date(rawEndsAt).getTime() : null);
 
     const [timeRemaining, setTimeRemaining] = useState(() =>
-        getTimeRemaining(savedEndsAt),
+        getTimeRemaining(endMillis),
     );
 
     useEffect(() => {
-        if (!user) {
+        if (!user || !endMillis) {
             setTimeRemaining(null);
             return;
         }
 
-        setTimeRemaining(getTimeRemaining(savedEndsAt));
+        setTimeRemaining(getTimeRemaining(endMillis));
 
         const intervalId = setInterval(() => {
-            setTimeRemaining(getTimeRemaining(savedEndsAt));
+            setTimeRemaining(getTimeRemaining(endMillis));
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [savedEndsAt]);
+    }, [user, endMillis]);
 
     if (!user) {
         return (
             <section className="card">
                 <p className="tag">Today&apos;s Special</p>
-                <h2>Today&apos;s special for {displayName}</h2>
+                <h2>Today&apos;s special</h2>
                 <p className="muted">Login to see today&apos;s special.</p>
                 {vendor && (
                     <p className="muted">
@@ -106,6 +89,10 @@ function DailySpecial({ special, vendor }) {
         .map((n) => String(n).padStart(2, "0"))
         .join(":");
 
+    const cartItem = vendor
+        ? { ...special, vendorId: vendor.id, vendorName: vendor.name }
+        : special;
+
     return (
         <section className="card">
             <p className="tag">Today&apos;s Special</p>
@@ -126,7 +113,7 @@ function DailySpecial({ special, vendor }) {
             <button
                 className="btn"
                 type="button"
-                onClick={() => addToCart(special)}
+                onClick={() => addToCart(cartItem)}
             >
                 Add special to cart
             </button>

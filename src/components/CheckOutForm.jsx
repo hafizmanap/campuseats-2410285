@@ -33,9 +33,9 @@ function validate(values) {
     return errors;
 }
 
-function CheckOutForm({ onPlaceOrder }) {
+function CheckOutForm({ defaultName = "", onPlaceOrder }) {
     const [values, setValues] = useState({
-        name: "",
+        name: defaultName,
         mahallah: "",
         pickupTime: "",
     });
