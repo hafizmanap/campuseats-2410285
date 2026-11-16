@@ -1,12 +1,8 @@
 import DailySpecial from "./DailySpecial.jsx";
 
-function isActive(special) {
-    return new Date(special.endsAt).getTime() > Date.now();
-}
-
 function TodaysSpecials({ vendors }) {
     const withSpecials = vendors.filter(
-        (vendor) => vendor.dailySpecial && isActive(vendor.dailySpecial),
+        (vendor) => vendor.dailySpecial,
     );
 
     return (

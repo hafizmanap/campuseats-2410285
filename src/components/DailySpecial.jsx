@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import useCart from "../hooks/useCart.js";
+import { useAuth } from "../hooks/useAuth.js";
+import useLocalStorage from "../hooks/useLocalStorage.js";
+
+//The special runs until 23:59:59 today (local time).
+function getTodayEnd() {
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    return end.toISOString();
+}
 
 function getTimeRemaining(endsAt) {
     const diff = new Date(endsAt).getTime() - Date.now();
@@ -16,25 +25,77 @@ function getTimeRemaining(endsAt) {
     return { days, hours, minutes, seconds };
 }
 
-// Pass `vendor` to show a link to that vendor's page (used on the home page)
+// Pass vendor to show a link to that vendor's page
 function DailySpecial({ special, vendor }) {
+    const { user } = useAuth();
+    const location = useLocation();
     const { addToCart } = useCart();
+
+    const storageKey = user ? `ce-special-${user.uid}` : null;
+    const [savedEndsAt, setSavedEndsAt] = useLocalStorage(
+        storageKey,
+        getTodayEnd(),
+    );
+
+    const today = new Date().toDateString();
+    const savedDay = new Date(savedEndsAt).toDateString();
+
+    useEffect(() => {
+        if (user && savedDay !== today) {
+            setSavedEndsAt(getTodayEnd());
+        }
+    }, [user, savedDay, today, setSavedEndsAt]);
+
     const [timeRemaining, setTimeRemaining] = useState(() =>
-        getTimeRemaining(special.endsAt),
+        getTimeRemaining(savedEndsAt),
     );
 
     useEffect(() => {
+        if (!user) {
+            setTimeRemaining(null);
+            return;
+        }
+
+        setTimeRemaining(getTimeRemaining(savedEndsAt));
+
         const intervalId = setInterval(() => {
-            setTimeRemaining(getTimeRemaining(special.endsAt));
+            setTimeRemaining(getTimeRemaining(savedEndsAt));
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [special.endsAt]);
+    }, [savedEndsAt]);
+
+    if (!user) {
+        return (
+            <section className="card">
+                <p className="tag">Today&apos;s Special</p>
+                <h2>Today&apos;s special for {displayName}</h2>
+                <p className="muted">Login to see today&apos;s special.</p>
+                {vendor && (
+                    <p className="muted">
+                        at{" "}
+                        <Link to={`/vendor/${vendor.id}`}>{vendor.name}</Link>
+                    </p>
+                )}
+                <Link
+                    className="btn"
+                    to="/login"
+                    state={{ from: location.pathname }}
+                >
+                    Login
+                </Link>
+            </section>
+        );
+    }
+
+    const displayName = user.displayName || user.email || "User";
 
     if (!timeRemaining) {
         return (
             <section className="card">
-                <h2>Daily Special</h2>
+                <p className="tag">Today&apos;s Special</p>
+                <h2>Today&apos;s special for {displayName}</h2>
+                <h3>{special.name}</h3>
                 <p>This daily special has ended.</p>
             </section>
         );
@@ -48,7 +109,8 @@ function DailySpecial({ special, vendor }) {
     return (
         <section className="card">
             <p className="tag">Today&apos;s Special</p>
-            <h2>{special.name}</h2>
+            <h2>Today&apos;s special for {displayName}</h2>
+            <h3>{special.name}</h3>
             {vendor && (
                 <p className="muted">
                     at <Link to={`/vendor/${vendor.id}`}>{vendor.name}</Link>
