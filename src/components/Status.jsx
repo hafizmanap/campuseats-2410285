@@ -3,11 +3,11 @@ export function Loading() {
         <p className="muted" role="status">
             Loading menus...
         </p>
-    )
+    );
 }
 
-export function ErrorMessage({message, onRetry}) {
-    return(
+export function ErrorMessage({ message, onRetry }) {
+    return (
         <div className="card error" role="alert">
             <p>Could not load menus: {message}</p>
 
@@ -15,5 +15,5 @@ export function ErrorMessage({message, onRetry}) {
                 Try Again
             </button>
         </div>
-    )
+    );
 }

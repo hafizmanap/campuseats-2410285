@@ -10,18 +10,43 @@ import {
 } from "firebase/auth";
 import { auth } from "../firebase.js";
 import { AuthContext } from "./auth-context.js";
+import { ensureUserProfile, subscribeToProfile } from "../services/users.js";
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
+    const [profile, setProfile] = useState(null); // NEW, next to user and loading
     const [loading, setLoading] = useState(true); // true until Firebase answers
 
     // Listen, don't ask: runs once on load and on every sign-in / sign-out.
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+        let stopProfile = () => {};
+        const stopAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+            stopProfile();
             setUser(firebaseUser);
-            setLoading(false);
+            if (!firebaseUser) {
+                setProfile(null);
+                setLoading(false);
+                return;
+            }
+            setLoading(true); // wait for the role before showing role-based pages
+            try {
+                await ensureUserProfile(firebaseUser);
+            } catch (err) {
+                console.error(err);
+            }
+            stopProfile = subscribeToProfile(
+                firebaseUser.uid,
+                (p) => {
+                    setProfile(p);
+                    setLoading(false);
+                },
+                () => setLoading(false),
+            );
         });
-        return unsubscribe; // cleanup: stop listening
+        return () => {
+            stopAuth();
+            stopProfile();
+        }; // two listeners, two cleanups
     }, []);
 
     async function register(name, email, password) {
@@ -31,6 +56,7 @@ export function AuthProvider({ children }) {
             password,
         );
         await updateProfile(credential.user, { displayName: name });
+        await ensureUserProfile(credential.user, name);
         setUser({ ...credential.user, displayName: name }); // show the name at once
     }
 
@@ -49,7 +75,17 @@ export function AuthProvider({ children }) {
         return signOut(auth);
     }
 
-    const value = { user, loading, register, login, loginWithGoogle, logout };
+    const role = profile?.role ?? null;
+    const value = {
+        user,
+        profile,
+        role,
+        loading,
+        register,
+        login,
+        loginWithGoogle,
+        logout,
+    };
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
     );

@@ -82,3 +82,13 @@ Resolving Firestore permission errors during seeding, and migrating my Daily Spe
 	• Rejected: Creating a brand-new SpecialCountdown badge component from scratch, since I already had a working DailySpecial card component from Week 5 that only needed its localStorage timer swapped for Firestore.
 - One thing the AI got wrong and how I fixed it:
 The AI initially assumed special and specialEndsAt were stored at the top level of the vendor document (vendor.specialEndsAt), which caused my countdown to show "This daily special has ended" even though the date had not expired. I fixed this by sharing my vendors.json and DailySpecial.jsx structure so the code reads special.specialEndsAt inside the dailySpecial map and re-seeded Firestore.
+
+
+## Week 7 
+- Tool(s): Gemini / ChatGPT
+- What I asked for: Help implementing real-time order status updates and daily special feature, handling Firestore data updates for my React application.
+- What I kept, changed or rejected, and why:
+    • Kept: The use of Firestore `onSnapshot()` to listen for real-time changes to order documents so that customers can see updated order statuses without refreshing the page.
+    • Changed: Modified the order status display to use clear labels and visual indicators for each stage, such as Pending, Preparing, Ready for Pickup, and Complete. So, the order progress easier for users to understand.
+    • Rejected: Fetching order data only once using `getDocs()` because it would not automatically reflect status changes made by the vendor. I preferred using real-time listeners to keep the order information up to date.
+- One thing the AI got wrong and how I fixed it: The AI initially suggested setting up the Firestore `onSnapshot()` listener without properly cleaning it up when the component unmounted. This could cause unnecessary listeners and duplicate updates when navigating between pages. I fixed this by returning the unsubscribe function inside the `useEffect()` cleanup so that the listener is removed when the component unmounts or the order ID changes.

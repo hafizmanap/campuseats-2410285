@@ -8,37 +8,40 @@ import {
     writeBatch,
     updateDoc,
     deleteDoc,
-} from 'firebase/firestore'
-import { db } from '../firebase.js'
+} from "firebase/firestore";
+import { db } from "../firebase.js";
+
+export const STATUSES = ["Received", "Preparing", "Ready", "Collected"];
 
 // One order per vendor in the cart, all in a single batch.
 export async function placeOrders(user, cart, details) {
     const byVendor = new Map();
 
     for (const line of cart) {
-        const lines = byVendor.get(line.item.vendorId) ?? []
-        byVendor.set(line.item.vendorId, [...lines, line])
+        const lines = byVendor.get(line.item.vendorId) ?? [];
+        byVendor.set(line.item.vendorId, [...lines, line]);
     }
 
     const batch = writeBatch(db);
     for (const [vendorId, lines] of byVendor) {
-        const ref = doc(collection(db, 'orders')) // new document, auto id
+        const ref = doc(collection(db, "orders")); // new document, auto id
         batch.set(ref, {
-        studentUid: user.uid,
-        studentName: details.name,
-        mahallah: details.mahallah,
-        pickupTime: details.pickupTime,
-        vendorId,
-        vendorName: lines[0].item.vendorName,
-        items: lines.map(({ item, qty }) => ({
-            itemId: item.id,
-            name: item.name,
-            price: item.price,
-            qty,
-        })),
-        total: lines.reduce((sum, { item, qty }) => sum + item.price * qty, 0),
-        status: 'Received',
-        createdAt: serverTimestamp(),
+            studentUid: user.uid,
+            studentName: details.name,
+            mahallah: details.mahallah,
+            pickupTime: details.pickupTime,
+            vendorId,
+            vendorName: lines[0].item.vendorName,
+            vendorOwnerUid: lines[0].item.vendorOwnerUid ?? null,
+            items: lines.map(({ item, qty }) => ({
+                itemId: item.id,
+                name: item.name,
+                price: item.price,
+                qty,
+            })),
+            total: lines.reduce((sum, { item, qty }) => sum + item.price * qty, 0),
+            status: "Received",
+            createdAt: serverTimestamp(),
         });
     }
 
@@ -46,30 +49,45 @@ export async function placeOrders(user, cart, details) {
 }
 
 export function subscribeToMyOrders(uid, onData, onError) {
-    const q = query(collection(db, 'orders'), where('studentUid', '==', uid))
+    const q = query(collection(db, "orders"), where("studentUid", "==", uid));
 
     return onSnapshot(
         q,
         (snapshot) => {
-        const orders = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }))
-        // newest first; sorted here because where() + orderBy() on another field needs an index
-        orders.sort(
-            (a, b) =>
-            (b.createdAt?.toMillis?.() ?? Date.now()) -
-            (a.createdAt?.toMillis?.() ?? Date.now()),
-        )
-        onData(orders)
+            const orders = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
+            // newest first; sorted here because where() + orderBy() on another field needs an index
+            orders.sort(
+                (a, b) =>
+                    (b.createdAt?.toMillis?.() ?? Date.now()) -
+                    (a.createdAt?.toMillis?.() ?? Date.now()),
+            );
+            onData(orders);
         },
         onError,
     );
 }
 
+export function subscribeToVendorOrders(ownerUid, onData, onError) {
+    const q = query(
+        collection(db, "orders"),
+        where("vendorOwnerUid", "==", ownerUid),
+    );
+    return onSnapshot(
+        q,
+        (s) => onData(s.docs.map((d) => ({ id: d.id, ...d.data() }))),
+        onError,
+    );
+}
+
+export const updateOrderStatus = (orderId, status) =>
+    updateDoc(doc(db, "orders", orderId), { status });
+
 // Update: change ONE field. The other fields of the order stay as they are.
 export function changePickupTime(orderId, pickupTime) {
-    return updateDoc(doc(db, 'orders', orderId), { pickupTime })
+    return updateDoc(doc(db, "orders", orderId), { pickupTime });
 }
 
 // Delete: remove the whole document.
 export function cancelOrder(orderId) {
-    return deleteDoc(doc(db, 'orders', orderId))
+    return deleteDoc(doc(db, "orders", orderId));
 }

@@ -107,7 +107,7 @@ body {
 }
 .muted {
     color: var(--muted);
-    margin: 0.2rem 0;
+    margin: 0.5rem 0;
     font-size: 0.9rem;
 }
 .price {
@@ -158,6 +158,7 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
 }
+
 button.card {
     font: inherit;
     color: inherit;
@@ -397,6 +398,23 @@ a.card:hover {
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 0.5rem;
+}
+.vendor-card .photo {
+    width: 64px;
+    height: 64px;
+}
+
+.daily-special-card {
+    grid-column: 1 / -1;
+    width: 75%;
+    margin-bottom: 12px;
+}
+.photo-special {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 10px;
 }
 
 /* Week 10: service worker messages */

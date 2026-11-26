@@ -3,7 +3,7 @@ import { seedDemoData } from '../services/vendors.js';
 
 function SeedPage() {
     const [message, setMessage] = useState('');
-
+    
     async function handleSeed() {
         setMessage('Seeding demo data...');
         try{

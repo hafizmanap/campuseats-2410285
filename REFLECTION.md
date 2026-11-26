@@ -31,3 +31,35 @@ const endMillis =
     rawEndsAt?.toMillis?.() ??
     (rawEndsAt ? new Date(rawEndsAt).getTime() : null);
 ```
+
+## Week 7
+
+### 1. One rule explained (`orders` update & delete)
+```javascript
+allow update: if signedIn()
+  && resource.data.vendorOwnerUid == request.auth.uid
+  && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']);
+
+allow update: if signedIn()
+  && resource.data.studentUid == request.auth.uid
+  && resource.data.status == 'Received'
+  && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['pickupTime']);
+
+allow delete: if signedIn()
+  && resource.data.studentUid == request.auth.uid
+  && resource.data.status == 'Received';
+```
+
+In the `orders` block, the first `allow update` rule allows only a signed-in vendor whose UID matches `resource.data.vendorOwnerUid` to update an order, and `diff(resource.data).affectedKeys().hasOnly(['status'])` restricts them to changing only the `status` field they cannot alter prices or items. The second `allow update` rule allows the signed-in student who placed the order (`resource.data.studentUid == request.auth.uid`) to update it, provided `resource.data.status == 'Received'` and only `pickupTime` is modified. Similarly, `allow delete` lets that same student cancel their own order only while its status is still `'Received'`. Therefore, any other user—or a student trying to modify or cancel an order that has already moved to `'Preparing'` fails these conditions and is denied by Firestore.
+
+### 2. Who can read and write each collection
+
+| Collection | Who can read | Who can write |
+| :--- | :--- | :--- |
+| **`users/{uid}`** | The matching user (`isUser(uid)`) or an `admin`. | **Create:** The user themselves (`isUser(uid)`) only with `role == 'student'`. **Update:** An `admin`, or the user themselves as long as `role` does not change. **Delete:** `admin` only. |
+| **`vendors/{vendorId}`** | Anyone (even signed-out users) if `approved == true`, plus an `admin` or the stall's owner (`ownerUid == request.auth.uid`). | **Create:** An `admin`, or any signed-in user applying with `ownerUid == request.auth.uid` and `approved == false`. **Update:** An `admin`, or the stall owner without changing `approved` or `ownerUid` (with `specialEndsAt` validated as `null` or a `timestamp`). **Delete:** `admin` only. |
+| **`vendors/{vendorId}/menu/{itemId}`** | Anyone (`allow read: if true`). | An `admin`, or the signed-in owner of that parent vendor stall (`vendorOwner(vendorId) == request.auth.uid`). |
+| **`orders/{orderId}`** | Signed-in users who are either the ordering student (`studentUid`), the stall owner (`vendorOwnerUid`), or an `admin`. | **Create:** A signed-in student creating their own order (`studentUid == request.auth.uid`) with `status == 'Received'` and matching `vendorOwnerUid`. **Update:** The stall owner (changing `status` only) or the ordering student (changing `pickupTime` only while `status == 'Received'`). **Delete:** The ordering student while `status == 'Received'`. |
+
+### 3. Why hiding buttons in React is not enough
+Hiding vendor buttons or routes in React (such as with `RoleRoute` or conditional rendering in `Header`) only controls what appears in the browser's user interface. Because React runs entirely on the client side, a technically savvy student can inspect the JavaScript bundle, open browser DevTools, or call the Firebase Firestore SDK/REST API directly with their auth token to send an `updateDoc` request on a menu item. What actually stops unauthorized changes is the server-side **`firestore.rules`** evaluated by Google's Firestore backend on every database request. Even if someone bypasses the React UI completely, Firestore checks `vendorOwner(vendorId) == request.auth.uid` on the server and rejects the write with a permission-denied error.

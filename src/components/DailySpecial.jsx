@@ -18,7 +18,7 @@ function getTimeRemaining(endMillis) {
     return { days, hours, minutes, seconds };
 }
 
-function DailySpecial({ special, endsAt, vendor }) {
+function DailySpecial({ special, endsAt, vendor, hideWhenExpired=false }) {
     const { user } = useAuth();
     const location = useLocation();
     const { addToCart } = useCart();
@@ -74,6 +74,8 @@ function DailySpecial({ special, endsAt, vendor }) {
     const displayName = user.displayName || user.email || "User";
 
     if (!timeRemaining) {
+        if (hideWhenExpired) return null;
+
         return (
             <section className="card">
                 <p className="tag">Today&apos;s Special</p>
@@ -90,33 +92,52 @@ function DailySpecial({ special, endsAt, vendor }) {
         .join(":");
 
     const cartItem = vendor
-        ? { ...special, vendorId: vendor.id, vendorName: vendor.name }
+        ? {
+                ...special,
+                vendorId: vendor.id,
+                vendorName: vendor.name,
+                vendorOwnerUid: vendor.ownerUid ?? null,
+            }
         : special;
 
     return (
-        <section className="card">
-            <p className="tag">Today&apos;s Special</p>
-            <h2>Today&apos;s special for {displayName}</h2>
-            <h3>{special.name}</h3>
-            {vendor && (
-                <p className="muted">
-                    at <Link to={`/vendor/${vendor.id}`}>{vendor.name}</Link>
+        <section className="card row daily-special-card">
+            <div>
+                <p className="tag">Today&apos;s Special</p>
+                <h2>Today&apos;s special for {displayName}</h2>
+                <h3>{special.name}</h3>
+                {vendor && (
+                    <p className="muted">
+                        at{" "}
+                        <Link to={`/vendor/${vendor.id}`}>{vendor.name}</Link>
+                    </p>
+                )}
+                <p className="price">RM {special.price.toFixed(2)}</p>
+                <p className="description">{special.description}</p>
+                <p role="timer" aria-live="off">
+                    Time remaining: {days > 0 ? `${days}d ` : ""}
+                    {clock}
                 </p>
-            )}
-            <p className="price">RM {special.price.toFixed(2)}</p>
-            <p className="description">{special.description}</p>
-            <p role="timer" aria-live="off">
-                Time remaining: {days > 0 ? `${days}d ` : ""}
-                {clock}
-            </p>
 
-            <button
-                className="btn"
-                type="button"
-                onClick={() => addToCart(cartItem)}
-            >
-                Add special to cart
-            </button>
+                <button
+                    className="btn"
+                    type="button"
+                    onClick={() => addToCart(cartItem)}
+                >
+                    Add special to cart
+                </button>
+            </div>
+
+            {special.photoUrl ? (
+                <img
+                    src={special.photoUrl}
+                    className="photo-special"
+                />
+            ) : (
+                <div className="thumb" aria-hidden="true">
+                    {special.name.charAt(0)}
+                </div>
+            )}
         </section>
     );
 }

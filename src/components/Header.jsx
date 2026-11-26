@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 
 function Header() {
     const { count } = useCart();
-    const { user, logout } = useAuth();
+    const { user, role, logout } = useAuth();
     const navigate = useNavigate();
 
     async function handleLogout() {
@@ -30,6 +30,9 @@ function Header() {
                     Cart
                     <span className="badge">{count}</span>
                 </NavLink>
+                {role === "vendor" && <NavLink to="/dashboard">Dashboard</NavLink>}
+                {role === "admin" && <NavLink to="/admin">Admin</NavLink>}
+                {role === "student" && <NavLink to="/become-vendor">Sell food</NavLink>}
                 {user ? (
                     <>
                         <span className="user-name">Hi, {user.displayName || user.email}</span>
